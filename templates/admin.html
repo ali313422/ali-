@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>المستخدمون والاشتراكات</title>
+  <link rel="stylesheet" href="/static/css/app.css?v=brand2">
+  <style>
+    .admin-panel { padding: 1.25rem; }
+    .admin-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    .admin-table th, .admin-table td { border-bottom: 1px solid var(--line); padding: 0.6rem 0.4rem; text-align: right; vertical-align: middle; }
+    .admin-table th { color: var(--muted); font-weight: 600; }
+    .status-pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.78rem; }
+    .status-pill.ok { background: rgba(34,197,94,0.18); color: #86efac; }
+    .status-pill.bad { background: rgba(239,68,68,0.18); color: #fca5a5; }
+    .status-pill.wait { background: rgba(234,179,8,0.18); color: #fde68a; }
+    .edit-form { display: none; margin-top: 0.5rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: 0.5rem; background: rgba(0,0,0,0.15); }
+    .edit-form.open { display: grid; gap: 0.6rem; }
+    .edit-form-title { margin: 0 0 0.25rem; font-size: 0.95rem; font-weight: 800; color: var(--brand-bright); }
+    .action-btns { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .btn.danger { color: #fecaca; border-color: rgba(239,68,68,0.55); background: rgba(127,29,29,0.25); }
+    .btn.danger:hover { background: rgba(185,28,28,0.35); }
+    .manage-form .delete-user-row { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--line); }
+    .quick-delete-form { display: inline; margin: 0; }
+    .quick-delete-form button { margin: 0; }
+    .renew-row { display: grid; gap: 0.5rem; grid-template-columns: 1fr 1fr; align-items: end; }
+    .subscription-presets { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.35rem; }
+    .subscription-presets .btn { font-size: 0.82rem; padding: 0.35rem 0.65rem; min-height: auto; }
+    @media (max-width: 720px) { .renew-row { grid-template-columns: 1fr; } }
+    .flash { margin: 0.75rem 0 0; min-height: 1.2rem; color: var(--danger); white-space: pre-line; }
+    .flash.ok { color: var(--ok); }
+    .form-row { display: grid; gap: 0.75rem; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 720px) { .form-row { grid-template-columns: 1fr; } }
+    .admin-layout { display: grid; gap: 1.25rem; }
+    @media (min-width: 900px) {
+      .admin-layout { grid-template-columns: minmax(300px, 380px) 1fr; align-items: start; }
+    }
+  </style>
+</head>
+<body class="corner-brand">
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="/dashboard">
+        <span class="logo-mark">C</span>
+        <span>الركن — المستخدمون والاشتراكات</span>
+      </a>
+      <div style="display:flex;gap:0.75rem;align-items:center">
+        <a class="pill-link" href="/dashboard">لوحة التحكم</a>
+        <a class="pill-link" href="/logout">تسجيل خروج</a>
+      </div>
+    </header>
+
+    <section class="hero glass-card">
+      <h1>المشتركون والاشتراكات</h1>
+      <p class="muted">أضف مشتركاً، جدّد الاشتراك، غيّر بياناته، واضبط واتساب التواصل والتذكيرات.</p>
+      {{PAGE_FLASH}}
+      <p class="flash" id="page-flash"></p>
+      {{ADMIN_VERSION}}
+    </section>
+
+    <section class="glass-card admin-panel super-admin-only" style="margin-bottom:1.25rem">
+      <h2>حسابي — مدير النظام</h2>
+      <p class="muted" style="margin:0 0 0.75rem;font-size:0.88rem">غيّر <strong>اسم الدخول</strong> و<strong>كلمة المرور</strong> لحسابك (admin). لا يظهر هنا في قائمة المشتركين.</p>
+      <form id="account-form" class="form-stack">
+        <div class="form-row">
+          <label><span>اسم الدخول (يوزر)</span><input name="username" id="account-username" autocomplete="username" required></label>
+          <label><span>الاسم المعروض</span><input name="display_name" id="account-display-name"></label>
+        </div>
+        <label><span>بريد Gmail (للاستعادة)</span><input name="email" type="email" id="account-email" placeholder="you@gmail.com" required></label>
+        <label><span>كلمة مرور جديدة</span><input name="password" type="password" id="account-password" placeholder="اتركها فارغة إن لم تُرد التغيير" autocomplete="new-password"></label>
+        <button class="btn primary" type="submit">حفظ حسابي</button>
+        <p class="flash" id="account-flash"></p>
+      </form>
+    </section>
+
+    <section class="glass-card admin-panel super-admin-only" style="margin-bottom:1.25rem">
+      <h2>حسابات إدارية إضافية</h2>
+      <p class="muted" style="margin:0 0 0.75rem;font-size:0.88rem">أنشئ حسابات دخول لك أو لموظفيك (مدير نظام أو مدير جهة). كل حساب يحتاج <strong>بريد Gmail</strong> للاستعادة.</p>
+      <table class="admin-table" style="margin-bottom:1rem">
+        <thead>
+          <tr><th>المستخدم</th><th>البريد</th><th>النوع</th></tr>
+        </thead>
+        <tbody id="admins-table-body"><tr><td colspan="3" class="muted">جاري التحميل...</td></tr></tbody>
+      </table>
+      <form id="admin-form" class="form-stack" method="post" action="/admin">
+        <input type="hidden" name="action" value="create_admin_account">
+        <div class="form-row">
+          <label><span>اسم الدخول</span><input name="username" required autocomplete="off"></label>
+          <label><span>كلمة المرور</span><input name="password" type="password" required autocomplete="new-password"></label>
+        </div>
+        <label><span>الاسم المعروض</span><input name="display_name"></label>
+        <label><span>بريد Gmail</span><input name="email" type="email" required placeholder="you@gmail.com"></label>
+        <label><span>نوع الحساب</span>
+          <select name="role">
+            <option value="ministry_admin">مدير جهة (إدارة كاملة)</option>
+            <option value="super_admin">مدير نظام (كامل)</option>
+          </select>
+        </label>
+        <button class="btn primary" type="submit">إضافة حساب إداري</button>
+        <p class="flash" id="admin-flash"></p>
+      </form>
+    </section>
+
+    <section class="glass-card admin-panel super-admin-only" style="margin-bottom:1.25rem">
+      <h2>إعدادات Gmail — استعادة كلمة المرور</h2>
+      <p class="muted" style="margin:0 0 0.75rem;font-size:0.85rem">من Gmail: تفعيل التحقق بخطوتين → كلمة مرور التطبيقات (App Password) — ليس كلمة Gmail العادية.</p>
+      <form id="smtp-form" class="form-stack">
+        <label><span>رابط الموقع (للروابط في البريد)</span><input name="site_public_url" id="site_public_url" placeholder="http://127.0.0.1:8000"></label>
+        <div class="form-row">
+          <label><span>SMTP (Gmail)</span><input name="smtp_host" id="smtp_host" value="smtp.gmail.com"></label>
+          <label><span>المنفذ</span><input name="smtp_port" id="smtp_port" value="587"></label>
+        </div>
+        <div class="form-row">
+          <label><span>بريد Gmail</span><input name="smtp_user" id="smtp_user" type="email" placeholder="you@gmail.com"></label>
+          <label><span>كلمة مرور التطبيقات</span><input name="smtp_password" id="smtp_password" type="password" placeholder="xxxx xxxx xxxx xxxx"></label>
+        </div>
+        <label><span>المرسل (اختياري)</span><input name="smtp_from" id="smtp_from" type="email" placeholder="نفس بريد Gmail"></label>
+        <button class="btn primary" type="submit">حفظ إعدادات Gmail</button>
+        <p class="flash" id="smtp-flash"></p>
+      </form>
+    </section>
+
+    <section class="glass-card admin-panel" style="margin-bottom:1.25rem">
+      <h2>إعدادات الموقع — التواصل وواتساب</h2>
+      <form id="settings-form" class="form-stack">
+        <div class="form-row">
+          <label><span>اسمك (يظهر للعملاء)</span><input name="owner_name" id="owner_name" required placeholder="مثال: أحمد — تصميم مطابخ"></label>
+          <label><span>رقم واتسابك</span><input name="owner_whatsapp" id="owner_whatsapp" placeholder="05xxxxxxxx أو 9665xxxxxxxx"></label>
+        </div>
+        <label><span>إرسال تذكيرات انتهاء الاشتراك (رسالتان)</span>
+          <select name="whatsapp_notify_mode" id="whatsapp_notify_mode">
+            <option value="disabled">معطّل</option>
+            <option value="callmebot">CallMeBot (مجاني — يحتاج إعداد)</option>
+            <option value="webhook">Webhook (رابط HTTP خاص بك)</option>
+          </select>
+        </label>
+        <label><span>رابط Webhook (إن اخترت webhook)</span><input name="whatsapp_webhook_url" id="whatsapp_webhook_url" placeholder="https://..."></label>
+        <label><span>نص رسالة التذكير</span>
+          <textarea name="expiry_message" id="expiry_message" rows="3" placeholder="مرحباً {name}، اشتراكك ينتهي غداً ({ends_at})..."></textarea>
+        </label>
+        <p class="muted" style="font-size:0.85rem">
+          <strong>رسالتان:</strong> (1) قبل يوم — إذا الانتهاء <strong>غداً</strong>،
+          (2) يوم الانتهاء — إذا الانتهاء <strong>اليوم</strong>.
+          المتغيرات: {name} {ends_at} {owner} {when} — موبايل المشترك + وضع غير «معطّل».
+        </p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <button class="btn primary" type="submit">حفظ الإعدادات</button>
+          <button class="btn ghost" type="button" id="run-reminders-btn">إرسال تذكيرات الآن (تجربة)</button>
+        </div>
+        <p class="flash" id="settings-flash"></p>
+      </form>
+    </section>
+
+    <div class="admin-layout">
+      <section class="glass-card admin-panel">
+        <h2>إضافة مشترك جديد</h2>
+        <form id="user-form" class="form-stack">
+          <label><span>الجهة / الوزارة</span><select name="ministry_id" id="ministry-select" required></select></label>
+          <div class="form-row">
+            <label><span>اسم الدخول</span><input name="username" required autocomplete="off" placeholder="user01"></label>
+            <label><span>كلمة المرور</span><input name="password" type="password" required autocomplete="new-password"></label>
+          </div>
+          <label><span>الاسم المعروض</span><input name="display_name" placeholder="اختياري"></label>
+          <label><span>موبايل الواتساب</span><input name="phone" type="tel" placeholder="07xxxxxxxx" required></label>
+          <label><span>بريد Gmail (استعادة — اختياري)</span><input name="email" type="email" placeholder="user@gmail.com"></label>
+          <div class="form-row">
+            <label><span>بداية الاشتراك</span><input name="starts_at" type="date" required></label>
+            <label><span>نهاية الاشتراك</span><input name="ends_at" type="date" required></label>
+          </div>
+          <label><span>عدد مرات الرندر</span><input name="render_limit" type="number" min="0" value="20" required></label>
+          <label><span>ملاحظة</span><input name="notes" placeholder="مثال: اشتراك سنوي"></label>
+          <button class="btn primary" type="submit">إضافة المشترك</button>
+          <p class="flash" id="user-flash"></p>
+        </form>
+      </section>
+
+      <section class="glass-card admin-panel">
+      <h2>قائمة المشتركين</h2>
+      <p class="muted" style="margin:0 0 0.75rem;font-size:0.88rem">لتعديل مشترك: اضغط <strong>تعديل</strong> ثم غيّر اليوزر، الباسورد، التواريخ، حد الرندر، والموبايل → <strong>حفظ كل التعديلات</strong>.</p>
+      <table class="admin-table" id="users-table">
+        <thead>
+          <tr>
+            <th>المستخدم</th>
+            <th>من</th>
+            <th>إلى</th>
+            <th>الرندر</th>
+            <th>الحالة</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="users-table-body">{{USERS_TABLE_ROWS}}</tbody>
+      </table>
+      </section>
+    </div>
+  </div>
+  <script src="/static/js/admin.js?v=14"></script>
+</body>
+</html>

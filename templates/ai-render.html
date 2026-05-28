@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>رندر بالذكاء الاصطناعي — مصمم المطابخ</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="designer-page ai-render-page">
+  <div class="page-shell ai-render-shell">
+    <header class="topbar">
+      <a class="brand" href="/designer">
+        <span class="logo-mark">K</span>
+        <span>رندر AI — mnml · LookX · Veras</span>
+      </a>
+      <nav class="top-actions">
+        <a class="pill-link" href="/designer">المصمم</a>
+        <a class="pill-link" href="/dashboard">الرئيسية</a>
+      </nav>
+    </header>
+
+    {{CONTACT_CARD}}
+
+    <section class="glass-card ai-source-card">
+      <div class="ai-source-head">
+        <div>
+          <p class="eyebrow">الصورة المرسلة من المصمم</p>
+          <h1>حوّل تصميمك إلى صورة واقعية جدًا</h1>
+        </div>
+        <div class="ai-source-actions">
+          <label class="btn ghost ai-upload-btn">
+            رفع صورة
+            <input id="aiImageUpload" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          </label>
+          <button class="btn ghost" id="aiDownloadSource" type="button">تنزيل المصدر</button>
+        </div>
+      </div>
+      <div class="ai-source-preview">
+        <img id="aiSourceImage" alt="صورة التصميم" hidden>
+        <p class="muted" id="aiSourcePlaceholder">لا توجد صورة بعد. ارجع للمصمم واضغط «رندر AI» أو ارفع PNG من جهازك.</p>
+      </div>
+    </section>
+
+    <div class="ai-tabs" role="tablist" aria-label="أدوات الذكاء الاصطناعي">
+      <button class="ai-tab active" type="button" data-tab="mnml" role="tab" aria-selected="true">mnml.ai</button>
+      <button class="ai-tab" type="button" data-tab="lookx" role="tab">LookX</button>
+      <button class="ai-tab" type="button" data-tab="veras" role="tab">Veras</button>
+    </div>
+
+    <section class="glass-card ai-panel active" id="panel-mnml" role="tabpanel">
+      <h2>mnml.ai — داخل الموقع</h2>
+      <p class="muted">يحسّن رندر المطبخ إلى صورة فوتوغرافية. يحتاج مفتاح API من <a href="https://mnmlai.dev/" target="_blank" rel="noopener">mnmlai.dev</a> (حساب مجاني بأرصدة).</p>
+      <p class="ai-config-note" id="mnmlConfigNote"></p>
+      <p class="muted" id="renderQuotaNote"></p>
+      <label>
+        <span>وصف المطبخ (اختياري)</span>
+        <textarea id="mnmlPrompt" rows="3" placeholder="مطبخ عصري فاخر، إضاءة نهارية طبيعية، خشب وصاج بيج، رخام فاتح"></textarea>
+      </label>
+      <label>
+        <span>الوضع</span>
+        <select id="mnmlMode">
+          <option value="enhancer">تحسين رندر (Render Enhancer)</option>
+          <option value="interior">تصميم داخلي (Interior AI)</option>
+        </select>
+      </label>
+      <button class="btn primary" id="mnmlRun" type="button">تشغيل mnml.ai</button>
+      <p class="muted" id="mnmlStatus"></p>
+      <div class="ai-result-wrap" id="mnmlResultWrap" hidden>
+        <img id="mnmlResultImage" alt="نتيجة mnml.ai">
+        <a class="btn primary" id="mnmlDownload" href="#" download="kitchen-mnml-ai.png">تنزيل النتيجة</a>
+      </div>
+    </section>
+
+    <section class="glass-card ai-panel" id="panel-lookx" role="tabpanel" hidden>
+      <h2>LookX — منصة معمارية</h2>
+      <p class="muted">مناسبة لتحويل الاسكتش أو لقطة الشاشة إلى رندر معماري. سجّل دخولك ثم ارفع نفس الصورة من الأعلى.</p>
+      <div class="ai-external-actions">
+        <a class="btn primary" id="lookxOpen" href="https://www.lookx.ai/" target="_blank" rel="noopener">فتح LookX في تبويب جديد</a>
+        <button class="btn ghost" id="lookxCopySteps" type="button">نسخ خطوات الاستخدام</button>
+      </div>
+      <ol class="ai-steps muted">
+        <li>اضغط «تنزيل المصدر» أو استخدم الصورة المعروضة أعلاه.</li>
+        <li>افتح LookX → Start Creations → Render Mode.</li>
+        <li>اختر Interior أو Architecture وارفع الصورة.</li>
+        <li>اكتب وصف المطبخ واضغط Generate.</li>
+      </ol>
+      <div class="ai-embed-wrap">
+        <iframe id="lookxFrame" title="LookX" src="about:blank" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        <p class="muted ai-embed-fallback">إذا لم يظهر الموقع هنا، استخدم الزر «فتح LookX» (بعض المواقع تمنع التضمين).</p>
+      </div>
+    </section>
+
+    <section class="glass-card ai-panel" id="panel-veras" role="tabpanel" hidden>
+      <h2>Veras — EvolveLAB / Chaos</h2>
+      <p class="muted">أداة AI للمعماريين: ارفع لقطة الرندر واحصل على صورة واقعية جدًا (Image-to-Image).</p>
+      <div class="ai-external-actions">
+        <a class="btn primary" id="verasOpen" href="https://veras.evolvelab.io/" target="_blank" rel="noopener">فتح Veras في تبويب جديد</a>
+        <button class="btn ghost" id="verasCopySteps" type="button">نسخ خطوات الاستخدام</button>
+      </div>
+      <ol class="ai-steps muted">
+        <li>نزّل صورة التصميم من الأعلى.</li>
+        <li>في Veras Web: Upload image / sketch.</li>
+        <li>اختر أسلوبًا واقعيًا (Photorealistic) واضبط Creativity منخفضًا للحفاظ على التصميم.</li>
+        <li>صدّر الصورة النهائية.</li>
+      </ol>
+      <div class="ai-embed-wrap">
+        <iframe id="verasFrame" title="Veras" src="about:blank" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        <p class="muted ai-embed-fallback">إذا لم يظهر Veras هنا، افتحه في تبويب جديد من الزر أعلاه.</p>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="/static/js/ai-render.js"></script>
+</body>
+</html>

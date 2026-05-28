@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>مصمم المطابخ 3D</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="designer-page">
+  <div class="designer-shell">
+    <aside class="asset-drawer glass-card" id="assetDrawer">
+      <div class="drawer-head">
+        <a class="brand" href="/dashboard">
+          <span class="logo-mark">K</span>
+          <span>كتالوج التصميم</span>
+        </a>
+        <button class="icon-btn" id="drawerClose" type="button" aria-label="إغلاق الكتالوج">×</button>
+      </div>
+      <div class="catalog-quick" id="catalogQuick" aria-label="قوائم الكتالوج">
+        <button type="button" class="catalog-quick-btn active" id="materialsMenuBtn" aria-expanded="false">الخامات</button>
+        <button type="button" class="catalog-quick-btn" id="objectsMenuBtn" aria-expanded="false">المواد</button>
+      </div>
+      <div class="catalog-submenu glass-card" id="materialsMenu" hidden>
+        <button type="button" data-quick="mat-floor">خامات الأرضيات</button>
+        <button type="button" data-quick="mat-walls">خامات الجدران</button>
+        <button type="button" data-quick="mat-ceiling">خامات السقف</button>
+        <button type="button" data-quick="mat-cabinets">خامات الكابينات</button>
+        <button type="button" data-quick="mat-metals">خامات المعادن</button>
+      </div>
+      <div class="catalog-submenu glass-card" id="objectsMenu" hidden>
+        <button type="button" data-quick="obj-floor">كابينات أرضية</button>
+        <button type="button" data-quick="obj-upper">كابينات علوية</button>
+        <button type="button" data-quick="obj-double-upper">كابلات دبل علوية</button>
+        <button type="button" data-quick="obj-accessories">الإكسسوارات</button>
+        <button type="button" data-quick="obj-appliances">الكهربائيات</button>
+      </div>
+      <div class="catalog-tabs" id="catalogTabs" aria-label="أقسام الكتالوج" hidden></div>
+      <div class="catalog-list" id="catalogList"></div>
+    </aside>
+
+    <main class="designer-stage glass-card">
+      <header class="stage-toolbar stage-toolbar--compact">
+        <div class="stage-title">
+          <button class="icon-btn drawer-toggle" id="drawerToggle" type="button" aria-label="فتح الكتالوج">☰</button>
+          <div>
+            <p class="eyebrow">مصمم المطابخ</p>
+            <h1>المعاينة</h1>
+          </div>
+        </div>
+        <button class="icon-btn" id="moreMenuBtn" type="button" aria-label="المزيد" aria-expanded="false">⋮</button>
+      </header>
+
+      <div class="overflow-menu glass-card" id="overflowMenu" hidden>
+        <div class="overflow-hdr-block">
+          <label class="overflow-hdr">
+            <span>بيئة HDR</span>
+            <select id="hdrSelect" aria-label="اختيار ملف HDR"></select>
+          </label>
+          <label class="switch-card switch-card--compact">
+            <input id="hdrShowBg" type="checkbox" checked>
+            <span>إظهار البيئة داخل المشهد</span>
+          </label>
+          <label>
+            <span>قوة الإضاءة</span>
+            <input id="hdrEnvIntensity" type="range" min="40" max="200" step="5" value="120">
+          </label>
+          <label>
+            <span>ظهور الخلفية</span>
+            <input id="hdrBgIntensity" type="range" min="0" max="100" step="5" value="45">
+          </label>
+          <p class="hdr-preview-label muted" id="hdrPreviewLabel">لم يُحمَّل HDR بعد</p>
+        </div>
+        <button type="button" id="menuMaterial">خصائص الخامة</button>
+        <button type="button" id="menuWalls">إخفاء / إظهار الجدران</button>
+        <button type="button" id="menuOrder">إضافة أوردر</button>
+        <a href="/designer/setup">تعديل الغرفة</a>
+        <a href="/dashboard">الرئيسية</a>
+      </div>
+
+      <section class="viewport-wrap">
+        <div id="viewport" aria-label="مشهد تصميم المطبخ"></div>
+        <div class="render-overlay" id="renderOverlay" hidden aria-live="polite">
+          <div class="render-overlay-card glass-card">
+            <strong>رندر فوتوغرافي</strong>
+            <progress id="renderProgress" max="100" value="0"></progress>
+            <p class="muted" id="renderProgressLabel">جاري التحضير...</p>
+            <button class="btn ghost" id="renderCancel" type="button">إلغاء</button>
+          </div>
+        </div>
+        <div class="status-chip" id="status">جاهز</div>
+        <div class="measure-bar glass-card" id="measureBar" aria-label="القياسات والتنبيهات">
+          <div class="measure-row">
+            <strong id="measureTitle">بدون تحديد</strong>
+            <span class="measure-pill" id="measureDims">—</span>
+            <span class="measure-pill" id="measurePos">—</span>
+          </div>
+          <div class="measure-warnings" id="measureWarnings" aria-live="polite"></div>
+        </div>
+
+        <div class="item-hud" id="itemHud" hidden aria-label="أدوات العنصر المحدد">
+          <button class="hud-btn" id="hudResize" type="button">مقاس</button>
+          <button class="hud-btn" id="hudCabinetMat" type="button">خامات</button>
+          <button class="hud-btn" id="hudRotate45" type="button">45°</button>
+          <button class="hud-btn" id="hudRotate90" type="button">90°</button>
+          <button class="hud-btn hud-btn--danger" id="hudDelete" type="button">حذف</button>
+        </div>
+
+        <section class="resize-panel glass-card" id="resizePanel" aria-label="تغيير مقاس الكابينة">
+          <div class="resize-panel-head">
+            <strong>مقاس الكابينة</strong>
+            <button class="icon-btn" id="resizeClose" type="button" aria-label="إغلاق">×</button>
+          </div>
+          <div class="resize-grid">
+            <label>
+              <span>العرض سم</span>
+              <input id="resizeWidth" type="number" min="1" step="1" inputmode="numeric">
+            </label>
+            <label>
+              <span>الارتفاع سم</span>
+              <input id="resizeHeight" type="number" min="1" step="1" inputmode="numeric">
+            </label>
+            <label>
+              <span>العمق سم</span>
+              <input id="resizeDepth" type="number" min="1" step="1" inputmode="numeric">
+            </label>
+          </div>
+          <button class="btn primary" id="resizeApply" type="button">تطبيق المقاس</button>
+        </section>
+
+        <section class="material-panel glass-card" id="materialPanel" aria-label="خصائص لمعان الخامة">
+          <div class="resize-panel-head">
+            <strong>خصائص الخامة</strong>
+            <button class="icon-btn" id="materialClose" type="button" aria-label="إغلاق">×</button>
+          </div>
+          <div class="material-grid">
+            <label>
+              <span>السطح</span>
+              <select id="materialTarget">
+                <option value="walls">الجدران</option>
+                <option value="floor">الأرضية</option>
+                <option value="ceiling">السقف</option>
+              </select>
+            </label>
+            <label>
+              <span>اللمعان</span>
+              <input id="materialGloss" type="range" min="0" max="100" step="1" value="30">
+            </label>
+            <label>
+              <span>قوة الانعكاس</span>
+              <input id="materialEnv" type="range" min="0" max="200" step="1" value="55">
+            </label>
+            <label>
+              <span>معدنية</span>
+              <input id="materialMetal" type="range" min="0" max="100" step="1" value="2">
+            </label>
+          </div>
+          <button class="btn primary" id="materialApply" type="button">تطبيق</button>
+          <div class="map-previews" id="mapPreviews" aria-label="خرائط الخامة"></div>
+        </section>
+
+        <section class="material-panel glass-card cabinet-panel-draggable" id="cabinetMaterialPanel" aria-label="خامات الكابينة">
+          <div class="resize-panel-head panel-drag-handle" id="cabinetPanelDragHandle" title="اسحب لتحريك اللوحة">
+            <strong>خامات الكابينة</strong>
+            <span class="panel-drag-hint">⋮⋮ اسحب</span>
+            <button class="icon-btn" id="cabinetMatClose" type="button" aria-label="إغلاق">×</button>
+          </div>
+          <div class="material-grid">
+            <label>
+              <span>تطبيق على</span>
+              <select id="cabinetMatRegion">
+                <option value="light" selected>الأجزاء الفاتحة فقط (صاج / جسم)</option>
+                <option value="dark">الأجزاء الداكنة فقط (مقابض / إطار)</option>
+                <option value="all">كل الكابينة</option>
+                <option value="top">الجزء العلوي</option>
+                <option value="bottom">الجزء السفلي</option>
+              </select>
+            </label>
+            <label>
+              <span>حجم الخامة (UV)</span>
+              <input id="cabinetUvScale" type="range" min="20" max="300" step="5" value="100">
+            </label>
+            <label>
+              <span>تكرار U</span>
+              <input id="cabinetUvU" type="range" min="10" max="400" step="10" value="120">
+            </label>
+            <label>
+              <span>تكرار V</span>
+              <input id="cabinetUvV" type="range" min="10" max="400" step="10" value="120">
+            </label>
+          </div>
+          <p class="muted" style="margin:0">اختر خامة من <strong>خامات الكابينات</strong>. للصاج: <strong>الأجزاء الفاتحة</strong> — للمقابض: <strong>الأجزاء الداكنة</strong>. بدون UV تُولَّد خريطة إسقاط تلقائيًا للصور. لتلوين قطعة واحدة: اختر اللون ثم <strong>Shift+نقر</strong> على الجزء داخل الكابينة. في Blender سمِّ القطع (مثل door و handle) لتفريق أفضل.</p>
+        </section>
+
+        <section class="floating-tools floating-tools--compact" aria-label="أدوات التحريك">
+          <button class="tool-btn active" id="snapToggle" type="button" aria-pressed="true">مغنطة</button>
+        </section>
+      </section>
+
+      <footer class="designer-footer designer-footer--compact">
+        <span class="muted" id="renderQuotaNote" style="font-size:0.85rem;margin-inline-end:auto"></span>
+        <button class="btn primary" id="renderShot" type="button">رندر فوتوغرافي</button>
+        <button class="btn primary" id="openAiRender" type="button">رندر AI</button>
+        <button class="btn ghost" id="clearItems" type="button">مسح</button>
+        <a class="btn ghost" href="/dashboard" id="exitDesigner">خروج</a>
+      </footer>
+      <div style="padding:0 1rem 1rem">{{CONTACT_CARD}}</div>
+    </main>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+      "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+      "three-mesh-bvh": "https://unpkg.com/three-mesh-bvh@0.7.6/build/index.module.js",
+      "three-gpu-pathtracer": "https://unpkg.com/three-gpu-pathtracer@0.0.23/build/index.module.js"
+    }
+  }
+  </script>
+  <script type="module" src="/static/js/designer.js"></script>
+</body>
+</html>

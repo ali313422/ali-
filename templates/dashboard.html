@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة التحكم - مصمم المطابخ</title>
+  <link rel="stylesheet" href="/static/css/app.css?v=brand2">
+</head>
+<body class="corner-brand">
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="/dashboard">
+        <span class="logo-mark">C</span>
+        <span>الركن — لوحة التحكم</span>
+      </a>
+      <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
+        {{ADMIN_LINK}}
+        <a class="pill-link" href="/logout">تسجيل خروج</a>
+      </div>
+    </header>
+
+    <section class="hero glass-card">
+      <div>
+        <p class="eyebrow">CORNER INTERIORS — الركن للتصميم الداخلي</p>
+        <h1>تصميم المطابخ وغرف النوم</h1>
+        <p class="muted">ابدأ بتجهيز جدران المطبخ وسقفه، ثم انتقل إلى المصمم لإضافة الكابينات والخامات يدويًا.</p>
+        {{SUBSCRIPTION}}
+      </div>
+      <a class="btn primary hero-action" href="/designer/setup">ابدأ تصميم مطبخ</a>
+    </section>
+
+    {{ADMIN_CARD}}
+
+    {{CONTACT_CARD}}
+
+    <section class="service-grid">
+      <article class="service-card glass-card active">
+        <h2>تصميم مطابخ</h2>
+        <p class="muted">صفحة مستقلة لبناء الغرفة، ثم مصمم ثلاثي الأبعاد احترافي بدون أي عناصر تلقائية.</p>
+        <a class="btn primary" href="/designer/setup">فتح مصمم المطابخ</a>
+      </article>
+      <article class="service-card glass-card">
+        <h2>تصميم غرف نوم</h2>
+        <p class="muted">مساحة جاهزة لإضافة مصمم غرف النوم لاحقًا.</p>
+        <span class="btn ghost">قريبًا</span>
+      </article>
+      <article class="service-card glass-card">
+        <h2>كتالوج أبواب</h2>
+        <p class="muted">قسم لعرض صور ومقاسات وموديلات الأبواب.</p>
+        <span class="btn ghost">قريبًا</span>
+      </article>
+      <article class="service-card glass-card">
+        <h2>أوردر HDF</h2>
+        <p class="muted">إدخال مقاسات أبواب HDF (طول/عرض/عدد) مع نقش أو بدون، وحساب إجمالي المساحة بالمتر المربع.</p>
+        <a class="btn primary" href="/hdf">فتح أوردر HDF</a>
+      </article>
+      <article class="service-card glass-card">
+        <h2>مخططات الدولاب</h2>
+        <p class="muted">أدخل مقاسات الدولاب (عرض/ارتفاع/عمق) والتفاصيل الداخلية (رفوف/علاقة/أبواب)، وسيتم توليد مخطط وقائمة قطع مع PDF (A4).</p>
+        <a class="btn primary" href="/wardrobe">فتح مخططات الدولاب</a>
+      </article>
+      <article class="service-card glass-card">
+        <h2>تقطيعات ألواح MDF</h2>
+        <p class="muted">أدخل مقاس اللوح + سمك المنشار + القطع وعددها، وسيتم تصفيطها مع رسم لكل لوح.</p>
+        <a class="btn primary" href="/mdf">فتح نظام تقطيع MDF</a>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

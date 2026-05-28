@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>نسيت اسم المستخدم</title>
+  <link rel="stylesheet" href="/static/css/app.css?v=brand4">
+</head>
+<body class="auth-page corner-brand">
+  <main class="auth-layout">
+    <div class="auth-hero-spacer" aria-hidden="true"></div>
+    <div class="auth-shell">
+      <section class="auth-card glass-card">
+        <h1 style="text-align:center;margin:0 0 0.5rem">استعادة اسم المستخدم</h1>
+        <p class="muted" style="text-align:center">سنرسل أسماء الدخول المرتبطة ببريدك</p>
+        {{ERROR}}
+        <form action="/forgot-username" method="post" class="form-stack">
+          <label>
+            <span>البريد الإلكتروني</span>
+            <input name="email" type="email" autocomplete="email" placeholder="you@gmail.com" required>
+          </label>
+          <button class="btn primary" type="submit">إرسال اسم المستخدم</button>
+        </form>
+        <p class="muted" style="text-align:center;margin-top:1rem">
+          <a href="/login">العودة لتسجيل الدخول</a> ·
+          <a href="/forgot-password">نسيت كلمة المرور؟</a>
+        </p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

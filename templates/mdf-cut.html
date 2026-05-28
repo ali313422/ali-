@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>تقطيع ألواح MDF</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="mdf-page corner-brand">
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="/dashboard">
+        <span class="logo-mark">K</span>
+        <span>تقطيع ألواح MDF</span>
+      </a>
+      <nav class="top-actions">
+        <a class="pill-link" href="/dashboard">الرئيسية</a>
+        <a class="pill-link" href="/logout">خروج</a>
+      </nav>
+    </header>
+
+    <main class="mdf-layout">
+      <section class="glass-card mdf-form" aria-label="بيانات اللوح والقطع">
+        <div class="mdf-form-head">
+          <div>
+            <p class="eyebrow">تصفيط احترافي</p>
+            <h1>ادخل مقاس اللوح والقطع</h1>
+            <p class="muted">الوحدات بالملِّيمتر. مثال لوح 1220×2440. أدخل سمك المنشار (Kerf) 3mm أو حسب CNC.</p>
+          </div>
+          <div class="mdf-form-actions">
+            <button class="btn primary" id="packBtn" type="button">تصفيط القطع</button>
+            <button class="btn ghost" id="exportCsvBtn" type="button">تصدير CSV</button>
+            <button class="btn ghost" id="savePdfBtn" type="button">حفظ PDF</button>
+            <button class="btn ghost" id="printBtn" type="button">طباعة / PDF</button>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            <span>عرض اللوح (mm)</span>
+            <input id="sheetW" type="number" min="100" step="1" value="1220" inputmode="numeric">
+          </label>
+          <label>
+            <span>طول اللوح (mm)</span>
+            <input id="sheetH" type="number" min="100" step="1" value="2440" inputmode="numeric">
+          </label>
+          <label>
+            <span>سمك المنشار / Kerf (mm)</span>
+            <input id="kerf" type="number" min="0" step="0.1" value="3" inputmode="decimal">
+          </label>
+          <label>
+            <span>حافة أمان (mm)</span>
+            <input id="margin" type="number" min="0" step="1" value="8" inputmode="numeric">
+          </label>
+        </div>
+
+        <div class="mdf-pieces">
+          <div class="mdf-pieces-head">
+            <strong>القطع</strong>
+            <div class="mdf-pieces-actions">
+              <button class="pill-link" id="addRowBtn" type="button">إضافة قطعة</button>
+              <button class="pill-link" id="clearRowsBtn" type="button">مسح</button>
+            </div>
+          </div>
+
+          <div class="mdf-table" role="table" aria-label="جدول القطع">
+            <div class="mdf-row mdf-row--head" role="row">
+              <div role="columnheader">الاسم</div>
+              <div role="columnheader">العرض (mm)</div>
+              <div role="columnheader">الطول (mm)</div>
+              <div role="columnheader">العدد</div>
+              <div role="columnheader">تدوير 90°</div>
+              <div role="columnheader">حذف</div>
+            </div>
+            <div id="piecesBody"></div>
+          </div>
+
+          <p class="muted mdf-note">ملاحظة: التصفيط يعتمد خوارزمية Shelf بسيطة وسريعة (مرتب حسب الطول ثم يرص صفوف). يعطي نتيجة جيدة لمعظم الأعمال اليومية.</p>
+        </div>
+      </section>
+
+      <section class="glass-card mdf-results" aria-label="نتائج التصفيط">
+        <div class="mdf-results-head">
+          <strong>النتائج</strong>
+          <span class="muted" id="summaryText">لم يتم التصفيط بعد.</span>
+        </div>
+        <div class="mdf-sheets" id="sheets"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+  <script src="/static/js/cutting.js" defer></script>
+</body>
+</html>

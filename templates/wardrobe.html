@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>مخططات الدولاب</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="wardrobe-page corner-brand">
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="/dashboard">
+        <span class="logo-mark">K</span>
+        <span>مخططات الدولاب</span>
+      </a>
+      <nav class="top-actions">
+        <a class="pill-link" href="/dashboard">الرئيسية</a>
+        <a class="pill-link" href="/logout">خروج</a>
+      </nav>
+    </header>
+
+    <main class="mdf-layout">
+      <section class="glass-card mdf-form" aria-label="إعدادات الدولاب">
+        <div class="mdf-form-head">
+          <div>
+            <p class="eyebrow">تصميم دولاب</p>
+            <h1 id="wardrobeTitle">مخطط دولاب</h1>
+            <p class="muted">الوحدات بالملِّيمتر. سيتم توليد مخطط + قائمة قطع (Cut List) + PDF A4.</p>
+          </div>
+          <div class="mdf-form-actions">
+            <button class="btn primary" id="calcBtn" type="button">تحديث المخطط</button>
+            <button class="btn ghost" id="saveWardrobePdfBtn" type="button">حفظ PDF (A4)</button>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            <span>اسم الزبون</span>
+            <input id="wCustomer" type="text" placeholder="مثال: محمد" autocomplete="name">
+          </label>
+          <label>
+            <span>سمك الخشب (mm)</span>
+            <input id="wThk" type="number" min="8" step="1" value="18" inputmode="numeric">
+          </label>
+          <label>
+            <span>عرض الدولاب (mm)</span>
+            <input id="wWidth" type="number" min="400" step="1" value="1600" inputmode="numeric">
+          </label>
+          <label>
+            <span>ارتفاع الدولاب (mm)</span>
+            <input id="wHeight" type="number" min="800" step="1" value="2400" inputmode="numeric">
+          </label>
+          <label>
+            <span>عمق الدولاب (mm)</span>
+            <input id="wDepth" type="number" min="300" step="1" value="600" inputmode="numeric">
+          </label>
+          <label>
+            <span>عدد الرفوف</span>
+            <input id="wShelves" type="number" min="0" step="1" value="4" inputmode="numeric">
+          </label>
+          <label class="switch-card">
+            <input id="wHasRail" type="checkbox" checked>
+            <span>يوجد علاقة ملابس</span>
+          </label>
+          <label>
+            <span>ارتفاع العلاقة من الأرض (mm)</span>
+            <input id="wRailY" type="number" min="200" step="1" value="1650" inputmode="numeric">
+          </label>
+          <label>
+            <span>عدد الأبواب</span>
+            <select id="wDoorsCount">
+              <option value="1">باب واحد</option>
+              <option value="2" selected>بابان</option>
+              <option value="3">3 أبواب</option>
+              <option value="4">4 أبواب</option>
+            </select>
+          </label>
+          <label>
+            <span>نوع الملحق</span>
+            <select id="wAddon">
+              <option value="none" selected>بدون ملحق</option>
+              <option value="single">ملحق واحد (علوي)</option>
+              <option value="double">دبل ملحق (علوي)</option>
+            </select>
+          </label>
+          <label>
+            <span>ارتفاع الملحق (mm)</span>
+            <input id="wAddonH" type="number" min="0" step="1" value="400" inputmode="numeric">
+          </label>
+          <label class="switch-card">
+            <input id="wEngraved" type="checkbox">
+            <span>أبواب نقش</span>
+          </label>
+          <label>
+            <span>ملاحظات</span>
+            <input id="wNotes" type="text" placeholder="مثال: اتجاه القشرة، نوع مفصلات...">
+          </label>
+        </div>
+
+        <div class="mdf-pieces">
+          <div class="mdf-pieces-head">
+            <strong>ملخص</strong>
+            <div class="mdf-pieces-actions">
+              <span class="measure-pill" id="wDoorsPill">الأبواب: —</span>
+              <span class="measure-pill" id="wAreaPill">مساحة الأبواب: —</span>
+            </div>
+          </div>
+          <p class="muted mdf-note" id="wHint">ملاحظة: حساب المقاسات هنا “أساسي” (بدون مفصلات/خلوصات خاصة). إذا عندك خلوص ثابت في الورشة قلّي وأثبته كإعداد.</p>
+        </div>
+      </section>
+
+      <section class="glass-card mdf-results" aria-label="المخطط وقائمة القطع">
+        <div class="mdf-results-head">
+          <strong>المخطط</strong>
+          <span class="muted" id="wSummary">اضغط “تحديث المخطط”.</span>
+        </div>
+        <div class="mdf-sheets">
+          <article class="mdf-sheet">
+            <div class="mdf-sheet-head">
+              <strong>واجهة (Front)</strong>
+              <span class="mdf-sheet-meta">مخطط مبسط</span>
+            </div>
+            <div class="mdf-canvas-wrap">
+              <canvas id="frontCanvas" aria-label="مخطط واجهة الدولاب"></canvas>
+            </div>
+          </article>
+          <article class="mdf-sheet">
+            <div class="mdf-sheet-head">
+              <strong>قائمة القطع (Cut List)</strong>
+              <span class="mdf-sheet-meta">مقاسات بالـ mm</span>
+            </div>
+            <div class="mdf-canvas-wrap">
+              <div class="mdf-table" style="background:#fff">
+                <div class="mdf-row mdf-row--head" style="display:grid;grid-template-columns:1.4fr 0.9fr 0.9fr 0.6fr 0.9fr 0.7fr">
+                  <div>القطعة</div>
+                  <div>العرض</div>
+                  <div>الطول</div>
+                  <div>العدد</div>
+                  <div>المادة</div>
+                  <div>ملاحظات</div>
+                </div>
+                <div id="cutListBody"></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+  <script src="/static/js/wardrobe.js" defer></script>
+</body>
+</html>
+

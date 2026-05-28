@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>أوردر HDF</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="hdf-page corner-brand">
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="/dashboard">
+        <span class="logo-mark">K</span>
+        <span>أوردر HDF</span>
+      </a>
+      <nav class="top-actions">
+        <a class="pill-link" href="/dashboard">الرئيسية</a>
+        <a class="pill-link" href="/logout">خروج</a>
+      </nav>
+    </header>
+
+    <main class="mdf-layout">
+      <section class="glass-card mdf-form" aria-label="بيانات الزبون والأبواب">
+        <div class="mdf-form-head">
+          <div>
+            <p class="eyebrow">طلب أبواب HDF</p>
+            <h1 id="hdfTitle">أوردر أبواب HDF</h1>
+            <p class="muted">الوحدات بالملِّيمتر. المساحة تحسب بالمتر المربع: \(العرض×الطول×العدد\).</p>
+          </div>
+          <div class="mdf-form-actions">
+            <button class="btn primary" id="addDoorRowBtn" type="button">إضافة باب</button>
+            <button class="btn ghost" id="saveHdfPdfBtn" type="button">حفظ PDF (A4)</button>
+            <button class="btn ghost" id="clearDoorRowsBtn" type="button">مسح</button>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            <span>اسم الزبون</span>
+            <input id="customerName" type="text" placeholder="مثال: أحمد علي" autocomplete="name">
+          </label>
+          <label>
+            <span>ملاحظات عامة</span>
+            <input id="orderNotes" type="text" placeholder="مثال: اللون، نوع القشرة، تاريخ التسليم...">
+          </label>
+        </div>
+
+        <div class="mdf-pieces">
+          <div class="mdf-pieces-head">
+            <strong>الأبواب</strong>
+            <div class="mdf-pieces-actions">
+              <span class="measure-pill" id="doorsCountPill">عدد الأبواب: 0</span>
+              <span class="measure-pill" id="doorsAreaPill">المساحة: 0.00 م²</span>
+            </div>
+          </div>
+
+          <div class="mdf-table" role="table" aria-label="جدول أبواب HDF">
+            <div class="mdf-row mdf-row--head" role="row">
+              <div role="columnheader">اسم الباب</div>
+              <div role="columnheader">العرض (mm)</div>
+              <div role="columnheader">الطول (mm)</div>
+              <div role="columnheader">العدد</div>
+              <div role="columnheader">نقش</div>
+              <div role="columnheader">حذف</div>
+            </div>
+            <div id="doorsBody"></div>
+          </div>
+
+          <p class="muted mdf-note">نقش: اختر “نقش” إذا كان الباب محفور/مكسّر، أو “بدون نقش” للباب السادة.</p>
+        </div>
+      </section>
+
+      <section class="glass-card mdf-results" aria-label="ملخص">
+        <div class="mdf-results-head">
+          <strong>ملخص سريع</strong>
+          <span class="muted" id="hdfSummary">أضف أبواب لاحتساب المساحة.</span>
+        </div>
+        <div class="empty-state" id="hdfPreview">
+          سيتم عرض إجمالي المساحة وعدد الأبواب هنا بعد إدخال البيانات.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+  <script src="/static/js/hdf-order.js" defer></script>
+</body>
+</html>
+

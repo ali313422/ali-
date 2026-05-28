@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تسجيل الدخول — الركن للتصميم الداخلي</title>
+  <link rel="stylesheet" href="/static/css/app.css?v=brand4">
+  <link rel="preload" href="/static/images/corner-hero-bg.png" as="image">
+</head>
+<body class="auth-page corner-brand">
+  <main class="auth-layout">
+    <div class="auth-hero-spacer" aria-hidden="true"></div>
+    <div class="auth-shell">
+    <section class="auth-card glass-card">
+      <div class="logo-mark logo-large">K</div>
+      <p class="eyebrow">Kitchen Studio</p>
+      <h1>موقع تصميم المطابخ</h1>
+      <p class="muted">ادخل إلى لوحة العمل ثم ابنِ الغرفة قبل فتح المصمم ثلاثي الأبعاد.</p>
+      {{ERROR}}
+      <form action="/login" method="post" class="form-stack">
+        <label>
+          <span>اسم المستخدم</span>
+          <input name="username" autocomplete="username" placeholder="admin" required>
+        </label>
+        <label>
+          <span>كلمة المرور</span>
+          <input name="password" type="password" autocomplete="current-password" placeholder="1234" required>
+        </label>
+        <button class="btn primary" type="submit">دخول</button>
+      </form>
+      <p class="muted" style="text-align:center;margin:0.75rem 0 0;font-size:0.88rem">
+        <a href="/forgot-password">نسيت كلمة المرور؟</a> ·
+        <a href="/forgot-username">نسيت اسم المستخدم؟</a>
+      </p>
+      <small class="muted">مدير النظام: admin / 1234 — بعد الدخول افتح <a href="/admin">/admin</a> لإدارة المستخدمين</small>
+      {{CONTACT_CARD}}
+    </section>
+    </div>
+  </main>
+</body>
+</html>

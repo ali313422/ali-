@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>بناء الجدران - مصمم المطابخ</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="setup-page corner-brand">
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="/dashboard">
+        <span class="logo-mark">K</span>
+        <span>بناء جدران المطبخ</span>
+      </a>
+      <nav class="top-actions">
+        <a class="pill-link" href="/dashboard">الرئيسية</a>
+        <a class="pill-link" href="/logout">خروج</a>
+      </nav>
+    </header>
+
+    <main class="setup-layout">
+      <section class="setup-intro glass-card">
+        <p class="eyebrow">الخطوة الأولى</p>
+        <h1>جهّز الغرفة قبل إدخال الكابينات والخامات</h1>
+        <p class="muted">هذه الصفحة مخصصة فقط للمقاسات والجدران والسقف. بعد الدخول إلى المصمم لن تظهر حقول الجدران داخل الواجهة الرئيسية.</p>
+        <div class="preview-room" aria-hidden="true">
+          <span class="preview-floor"></span>
+          <span class="preview-wall back"></span>
+          <span class="preview-wall side"></span>
+          <span class="preview-ceiling"></span>
+        </div>
+      </section>
+
+      <form class="setup-form glass-card" id="roomForm">
+        <div class="form-grid">
+          <label>
+            <span>عرض المطبخ بالمتر</span>
+            <input id="roomWidth" type="number" min="2" max="20" step="0.1" value="5" required>
+          </label>
+          <label>
+            <span>عمق المطبخ بالمتر</span>
+            <input id="roomDepth" type="number" min="2" max="20" step="0.1" value="4" required>
+          </label>
+          <label>
+            <span>ارتفاع الجدران بالمتر</span>
+            <input id="roomHeight" type="number" min="2" max="5" step="0.1" value="2.8" required>
+          </label>
+          <label>
+            <span>عدد الجدران</span>
+            <select id="wallCount">
+              <option value="1">جدار خلفي فقط</option>
+              <option value="2">جداران</option>
+              <option value="3">ثلاثة جدران</option>
+              <option value="4" selected>أربعة جدران</option>
+            </select>
+          </label>
+          <label>
+            <span>لون الجدران الأساسي</span>
+            <input id="wallColor" type="color" value="#f1eadc">
+          </label>
+          <label>
+            <span>لون الأرضية الأساسي</span>
+            <input id="floorColor" type="color" value="#7c5a3a">
+          </label>
+          <label>
+            <span>لون السقف الأساسي</span>
+            <input id="ceilingColor" type="color" value="#f8fafc">
+          </label>
+          <label>
+            <span>شكل البداية</span>
+            <select id="roomPreset">
+              <option value="empty" selected>غرفة فارغة فقط</option>
+              <option value="open-front">مطبخ مفتوح من الأمام</option>
+              <option value="corner">زاوية بجدارين</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="switch-row">
+          <label class="switch-card">
+            <input id="hasCeiling" type="checkbox" checked>
+            <span>إضافة سقف قابل لتركيب الإنارة والخامات</span>
+          </label>
+          <label class="switch-card">
+            <input id="showGrid" type="checkbox" checked>
+            <span>إظهار شبكة قياس خفيفة داخل المصمم</span>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn primary" type="submit">إنشاء الغرفة والدخول للمصمم</button>
+          <button class="btn ghost" type="button" id="resetDefaults">استعادة المقاسات الافتراضية</button>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script src="/static/js/setup.js" defer></script>
+</body>
+</html>
