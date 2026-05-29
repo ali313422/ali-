@@ -1,0 +1,9 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "deploy": {
+    "startCommand": "python 1.py",
+    "variables": {
+      "HOST": "0.0.0.0"
+    }
+  }
+}
