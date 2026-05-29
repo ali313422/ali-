@@ -1,1 +1,9 @@
-# No external dependencies required
+flet
+flet-web
+fastapi
+uvicorn
+pyjwt
+cryptography
+pillow
+aiohttp
+python-multipart
